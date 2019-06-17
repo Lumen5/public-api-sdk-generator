@@ -10419,7 +10419,10 @@
           "customer_id": "12345",
           "purchase_order": "123",
           "job": "456",
-          "client": "Smith Co."
+          "client": "Smith Co.",
+          "geo_location": "",
+          "number_viewed": "",
+          "search_term": ""
         },
         "maxProperties": 4,
         "properties": {
@@ -10438,8 +10441,20 @@
           "client": {
             "description": "The name of the client for which the media is licensed",
             "type": "string"
+          },
+          "geo_location": {
+            "description": "geo_location",
+            "type": "string"
+          },
+          "number_viewed": {
+            "description": "number_viewed",
+            "type": "string"
+          },
+           "search_term": {
+            "description": "search_term",
+            "type": "string"
           }
-        },
+       },
         "type": "object"
       },
       "LicenseVideo": {
