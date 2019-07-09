@@ -9955,6 +9955,9 @@
       "ImageAssets": {
         "description": "Image asset information",
         "properties": {
+          "huge_thumb": {
+            "$ref": "#/components/schemas/Thumbnail"
+          },
           "huge_jpg": {
             "$ref": "#/components/schemas/ImageSizeDetails"
           },
