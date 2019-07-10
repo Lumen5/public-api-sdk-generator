@@ -10578,20 +10578,8 @@
           "search_term": {
             "description": "The search term that the customer used",
             "type": "string"
-          },
-          "geo_location": {
-            "description": "geo_location",
-            "type": "string"
-          },
-          "number_viewed": {
-            "description": "number_viewed",
-            "type": "string"
-          },
-           "search_term": {
-            "description": "search_term",
-            "type": "string"
           }
-       },
+        },
         "type": "object"
       },
       "LicenseVideo": {
