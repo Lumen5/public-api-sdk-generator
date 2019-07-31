@@ -1,0 +1,123 @@
+---
+version: 2.1
+jobs:
+    setup:
+        docker:
+            - image: docker:19.03-git
+        steps:
+            - checkout
+            - run: |
+                  git clone git@github.com:Lumen5/shutterstock-api.git
+            - persist_to_workspace:
+                  root: .
+                  paths:
+                      - .
+    build-swagger:
+        docker:
+            - image: circleci/node:stretch
+        steps:
+            - attach_workspace:
+                  at: .
+            - run: npm install
+            - run: node build/swagger/openapiToSwagger.js
+            - persist_to_workspace:
+                  root: .
+                  paths:
+                      - .
+    build-python:
+        docker:
+            - image: swaggerapi/swagger-codegen-cli:2.4.2
+              environment:
+                  CODEGEN: /opt/swagger-codegen-cli/swagger-codegen-cli.jar
+        steps:
+            - attach_workspace:
+                  at: .
+            - run: |
+                  set -x
+                  java -jar ${CODEGEN} \
+                      generate \
+                      -i ./swagger2.json \
+                      -o ./shutterstock-api \
+                      -c ./build/sdk/py/config.json \
+                      -l python \
+                      -t ./build/sdk/py/templates
+            - persist_to_workspace:
+                  root: .
+                  paths:
+                      - .
+    test-python:
+        docker:
+            - image: circleci/python:3.7
+        steps:
+            - attach_workspace:
+                  at: .
+            - run: sudo pip install tox
+            - run: |
+                  set -x
+                  cd shutterstock-api
+                  tox
+    deploy:
+        docker:
+            - image: docker:19.03-git
+        steps:
+            - attach_workspace:
+                  at: .
+            - add_ssh_keys:
+                  fingerprints:
+                      - "34:c5:d7:52:c3:6f:86:6e:a0:ff:4e:25:d3:c0:cd:97"
+                      - "fd:cd:7a:b3:80:50:2a:f5:17:c1:7b:3f:b6:79:90:5a"
+            - run: |
+                  ssh-keyscan github.com >> ~/.ssh/known_hosts
+            - run: |
+                  git config --global user.email "marvin@lumen5.com"
+                  git config --global user.name "Marvin Martian"
+            - run: |
+                  set -x
+                  cd shutterstock-api
+                  git checkout -- git_push.sh
+                  git status
+                  git add .
+                  git commit -m 'Updating Python SDK'
+                  git push -u origin master
+workflows:
+    version: 2
+    build_workflow:
+        jobs:
+            - setup:
+                  filters:
+                      tags:
+                          ignore: /.*/  # all tags
+                      branches:
+                          only: /^python-sdk$/  # release branch
+            - build-swagger:
+                  requires:
+                      - setup
+                  filters:
+                      tags:
+                          ignore: /.*/  # all tags
+                      branches:
+                          only: /^python-sdk$/  # release branch
+            - build-python:
+                  requires:
+                      - build-swagger
+                  filters:
+                      tags:
+                          ignore: /.*/  # all tags
+                      branches:
+                          only: /^python-sdk$/  # release branch
+            - test-python:
+                  requires:
+                      - build-python
+                  filters:
+                      tags:
+                          ignore: /.*/  # all tags
+                      branches:
+                          only: /^python-sdk$/  # release branch
+            - deploy:
+                  requires:
+                      - test-python
+                  filters:
+                      tags:
+                          ignore: /.*/  # all tags
+                      branches:
+                          only: /^python-sdk$/  # release branch
