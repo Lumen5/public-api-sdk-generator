@@ -64,7 +64,7 @@ jobs:
                   at: .
             - add_ssh_keys:
                   fingerprints:
-                      - "34:c5:d7:52:c3:6f:86:6e:a0:ff:4e:25:d3:c0:cd:97"
+                      - "a2:14:e4:0b:85:0c:27:e7:67:d5:8c:9b:31:f7:89:75"
                       - "fd:cd:7a:b3:80:50:2a:f5:17:c1:7b:3f:b6:79:90:5a"
             - run: |
                   ssh-keyscan github.com >> ~/.ssh/known_hosts
