@@ -26,7 +26,7 @@ jobs:
                       - .
     build-python:
         docker:
-            - image: swaggerapi/swagger-codegen-cli:2.4.2
+            - image: swaggerapi/swagger-codegen-cli:2.4.17
               environment:
                   CODEGEN: /opt/swagger-codegen-cli/swagger-codegen-cli.jar
         steps:
