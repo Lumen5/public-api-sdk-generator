@@ -7,7 +7,7 @@ jobs:
         steps:
             - checkout
             - run: |
-                  git clone git@github.com:Lumen5/shutterstock-api.git
+                  git clone git@github.com:Lumen5/storyblocks-api.git
             - persist_to_workspace:
                   root: .
                   paths:
@@ -37,7 +37,7 @@ jobs:
                   java -jar ${CODEGEN} \
                       generate \
                       -i ./swagger2.json \
-                      -o ./shutterstock-api \
+                      -o ./storyblocks-api \
                       -c ./build/sdk/py/config.json \
                       -l python \
                       -t ./build/sdk/py/templates
@@ -54,7 +54,7 @@ jobs:
             - run: sudo pip install tox
             - run: |
                   set -x
-                  cd shutterstock-api
+                  cd storyblocks-api
                   tox
     deploy:
         docker:
@@ -73,7 +73,7 @@ jobs:
                   git config --global user.name "Marvin Martian"
             - run: |
                   set -x
-                  cd shutterstock-api
+                  cd storyblocks-api
                   git checkout -- git_push.sh
                   git status
                   git add .
@@ -88,7 +88,7 @@ workflows:
                       tags:
                           ignore: /.*/  # all tags
                       branches:
-                          only: /^python-sdk$/  # release branch
+                          only: /^python-sdk-storyblocks$/  # release branch
             - build-swagger:
                   requires:
                       - setup
@@ -96,7 +96,7 @@ workflows:
                       tags:
                           ignore: /.*/  # all tags
                       branches:
-                          only: /^python-sdk$/  # release branch
+                          only: /^python-sdk-storyblocks$/  # release branch
             - build-python:
                   requires:
                       - build-swagger
@@ -104,7 +104,7 @@ workflows:
                       tags:
                           ignore: /.*/  # all tags
                       branches:
-                          only: /^python-sdk$/  # release branch
+                          only: /^python-sdk-storyblocks$/  # release branch
             - test-python:
                   requires:
                       - build-python
@@ -112,7 +112,7 @@ workflows:
                       tags:
                           ignore: /.*/  # all tags
                       branches:
-                          only: /^python-sdk$/  # release branch
+                          only: /^python-sdk-storyblocks$/  # release branch
             - deploy:
                   requires:
                       - test-python
@@ -120,4 +120,4 @@ workflows:
                       tags:
                           ignore: /.*/  # all tags
                       branches:
-                          only: /^python-sdk$/  # release branch
+                          only: /^python-sdk-storyblocks$/  # release branch
